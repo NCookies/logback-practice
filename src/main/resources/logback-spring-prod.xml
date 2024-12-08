@@ -13,10 +13,10 @@
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>[REQUEST1] ${LOG_PATTERN}</pattern>
             <!--
-            ## outputPatternAsHeader
-            - File 헤더에 pattern을 출력한다.
-            - ref : https://logback.qos.ch/manual/encoders.html#outputPatternAsHeader
-            ex) #logback.classic pattern: [%-5level] %d{yyyy-MM-dd HH:mm:ss} [%thread] [%logger{0}:%line] - %msg%n
+                ## outputPatternAsHeader
+                - File 헤더에 pattern을 출력한다.
+                - ref : https://logback.qos.ch/manual/encoders.html#outputPatternAsHeader
+                ex) #logback.classic pattern: [%-5level] %d{yyyy-MM-dd HH:mm:ss} [%thread] [%logger{0}:%line] - %msg%n
             -->
             <outputPatternAsHeader>true</outputPatternAsHeader>
         </encoder>
@@ -49,15 +49,31 @@
     </appender>
 
     <appender name="ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <file>${LOG_DIR}/error.log</file>
-    <filter class="ch.qos.logback.classic.filter.LevelFilter">
-        <level>error</level>
-        <!-- 정확히 ERROR 레벨의 로그만 출력하고, WARN은 무시한다. -->
-        <onMatch>ACCEPT</onMatch>
-        <onMismatch>DENY</onMismatch>
-    </filter>
-    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-    <fileNamePattern>${LOG_DIR}/archive/error.%d{yyyy-MM-dd}_%i.log</fileNamePattern>
+        <file>${LOG_DIR}/error.log</file>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>error</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${LOG_PATTERN}</pattern>
+            <outputPatternAsHeader>true</outputPatternAsHeader>
+        </encoder>
+    </appender>
+
+    <appender name="QUERY" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/query.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/archive/query.%d{yyyy-MM-dd}_%i.log</fileNamePattern>
+            <maxFileSize>1KB</maxFileSize>
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${LOG_PATTERN}</pattern>
+            <outputPatternAsHeader>true</outputPatternAsHeader>
+        </encoder>
+    </appender>
+
 
     <root level="INFO">
         <appender-ref ref="REQUEST1" />
@@ -65,4 +81,19 @@
         <appender-ref ref="MDC" />
         <appender-ref ref="ERROR" />
     </root>
+
+    <!--
+        - Custom하게 생성한 logger 사용법은 'QueryController1, QueryController2'를 참고하자.
+          ex) LoggerFactory.getLogger("SQL_LOG");
+
+        - additivity는 상위 Logger의 속성을 상속 여부를 정한다.
+    -->
+    <logger name="SQL_LOG1" level="INFO" additivity="false">
+        <appender-ref ref="QUERY"/>
+    </logger>
+
+    <logger name="SQL_LOG2" level="INFO" additivity="false">
+        <appender-ref ref="QUERY"/>
+    </logger>
+
 </included>
