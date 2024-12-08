@@ -48,8 +48,21 @@
         </encoder>
     </appender>
 
+    <appender name="ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${LOG_DIR}/error.log</file>
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+        <level>error</level>
+        <!-- 정확히 ERROR 레벨의 로그만 출력하고, WARN은 무시한다. -->
+        <onMatch>ACCEPT</onMatch>
+        <onMismatch>DENY</onMismatch>
+    </filter>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+    <fileNamePattern>${LOG_DIR}/archive/error.%d{yyyy-MM-dd}_%i.log</fileNamePattern>
+
     <root level="INFO">
         <appender-ref ref="REQUEST1" />
         <appender-ref ref="REQUEST2" />
+        <appender-ref ref="MDC" />
+        <appender-ref ref="ERROR" />
     </root>
 </included>
