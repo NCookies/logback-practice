@@ -1,0 +1,36 @@
+<included>
+
+    <!--
+      ## "org/springframework/boot/logging/logback/console-appender.xml"에 정의되어 있는 appender는 다음과 같다.
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+                <charset>${CONSOLE_LOG_CHARSET}</charset>
+            </encoder>
+        </appender>
+
+        그리고 저기서 사용하는 ${CONSOLE_LOG_PATTERN}과 ${CONSOLE_LOG_CHARSET}은
+        logback-spring.xml에서 include한
+        "org/springframework/boot/logging/logback/defaults.xml"에 정의되어 있다.
+      -->
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+
+    <!-- 커스텀 Appender -->
+    <appender name="CONSOLE2" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <layout>
+            <pattern>
+                [CONSOLE2] [%-5level] %d{yyyy-MM-dd HH:mm:ss} [%thread] [%logger{0}:%line] - %msg%n
+            </pattern>
+        </layout>
+    </appender>
+
+    <!-- 루트 레벨은 DEBUG로 설정하더라도, Appender 마다 고유한 Level을 지정해줄 수 있다. -->
+    <root level="INFO">
+<!--        <appender-ref ref="CONSOLE" />-->
+        <appender-ref ref="CONSOLE2" />
+    </root>
+
+</included>

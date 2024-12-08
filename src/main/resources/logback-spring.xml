@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+    <!-- logback 관련 기존 설정 include -->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+    <!-- 동작 환경(로컬 개발 환경, 배포 운영 환경 등)에 따라 다른 logback에서 다른 설정, appender를 사용해야 한다. -->
+    <include resource="logback-spring-${spring.profiles.active}.xml" />
+</configuration>
